@@ -5,7 +5,8 @@ import { HTTPException } from "hono/http-exception";
 import { ZodError } from "zod";
 
 import { createOpenApiHono } from "./hono";
-import { userRoute } from "./route";
+import { protectedRoute } from "./route/protected";
+import { publicRoute } from "./route/public";
 
 import type { ErrorResponse } from "./error-schema";
 
@@ -33,7 +34,8 @@ const apiRoutes = app.route(
       return c.json<ErrorResponse>({ message: "Internal Server Error" }, 500);
     })
     .use(cors())
-    .route("/user", userRoute)
+    .route("/protected", protectedRoute)
+    .route("/public", publicRoute)
 );
 
 type AppType = typeof apiRoutes;

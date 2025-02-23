@@ -35,13 +35,20 @@ const errorResponses = {
       "application/json": {
         schema: createErrorResponseSchema({
           errorsExample: {
-            "username": [
-              "名前が短すぎます",
-              "名前に特殊文字を含めることはできません"
-            ],
-            password: ["パスワードは8文字以上で入力してください"],
+            email: [ "The email address format is incorrect"],
+            password: ["Password must be at least 8 characters long"],
           },
           messageExample: "Bad Request",
+        }),
+      },
+    },
+  },
+  401: {
+    description: "Unauthorized",
+    content: {
+      "application/json": {
+        schema: createErrorResponseSchema({
+          messageExample: "Unauthorized",
         }),
       },
     },
@@ -58,6 +65,17 @@ const errorResponses = {
   },
 } as const satisfies Parameters<typeof createRoute>["0"]["responses"];
 
-export { errorResponses };
+const protectedErrorResponses = {
+  400: errorResponses["400"],
+  401: errorResponses["401"],
+  500: errorResponses["500"],
+} satisfies Parameters<typeof createRoute>["0"]["responses"];
+
+const publicErrorResponses = {
+  400: errorResponses["400"],
+  500: errorResponses["500"],
+} satisfies Parameters<typeof createRoute>["0"]["responses"];
+
+export { protectedErrorResponses, publicErrorResponses };
 
 export type { ErrorResponse };

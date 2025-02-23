@@ -2,8 +2,9 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { HTTPException } from "hono/http-exception";
 
 import type { Env } from "hono";
+import type { ProtectedEnvVariables } from "./middleware";
 
-export const createOpenApiHono = <E extends Env = Env>() =>
+const createOpenApiHono = <E extends Env = Env>() =>
   new OpenAPIHono<E>({
     defaultHook: (result) => {
       if (!result.success) {
@@ -14,3 +15,8 @@ export const createOpenApiHono = <E extends Env = Env>() =>
       }
     },
   });
+
+const createProtectedOpenApiHono = () =>
+  createOpenApiHono<{ Variables: ProtectedEnvVariables }>();
+
+export { createOpenApiHono, createProtectedOpenApiHono }

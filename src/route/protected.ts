@@ -1,9 +1,10 @@
 import { createRoute, z } from "@hono/zod-openapi";
 
-import { errorResponses } from "./error-schema";
-import { createOpenApiHono } from "./hono";
+import { protectedErrorResponses } from "../error-schema";
+import { createProtectedOpenApiHono } from "../hono";
+import { authMiddleware } from "../middleware";
 
-export const userRoute = createOpenApiHono().openapi(
+const userRoute = createProtectedOpenApiHono().openapi(
   createRoute({
     method: "get",
     path: "/:id",
@@ -40,7 +41,7 @@ export const userRoute = createOpenApiHono().openapi(
         },
         description: "Retrieve the user",
       },
-      ...errorResponses,
+      ...protectedErrorResponses,
     },
   }),
   (c) => {
@@ -55,3 +56,10 @@ export const userRoute = createOpenApiHono().openapi(
     );
   },
 );
+
+const protectedRoute = createProtectedOpenApiHono()
+  .use(authMiddleware)
+  .route("/users", userRoute);
+
+
+export { protectedRoute };
