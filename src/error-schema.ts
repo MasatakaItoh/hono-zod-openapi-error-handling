@@ -2,20 +2,20 @@ import { z } from "@hono/zod-openapi";
 
 import type { createRoute } from "@hono/zod-openapi";
 
-const ErrorsSchema = z.record(z.array(z.string())).optional();
-const MessageSchema = z.string();
+const errorsSchema = z.record(z.array(z.string())).optional();
+const messageSchema = z.string();
 
 const createErrorResponseSchema = ({
   errorsExample,
   messageExample,
 }: {
-  errorsExample?: z.infer<typeof ErrorsSchema>;
-  messageExample: z.infer<typeof MessageSchema>;
+  errorsExample?: z.infer<typeof errorsSchema>;
+  messageExample: z.infer<typeof messageSchema>;
 }) =>
   z
     .object({
-      errors: ErrorsSchema,
-      message: MessageSchema,
+      errors: errorsSchema,
+      message: messageSchema,
     })
     .openapi({
       example: {
@@ -24,9 +24,7 @@ const createErrorResponseSchema = ({
       },
     });
 
-type ErrorResponse = z.infer<
-  ReturnType<typeof createErrorResponseSchema>
->;
+type ErrorResponse = z.infer<ReturnType<typeof createErrorResponseSchema>>;
 
 const errorResponses = {
   400: {
@@ -35,7 +33,7 @@ const errorResponses = {
       "application/json": {
         schema: createErrorResponseSchema({
           errorsExample: {
-            email: [ "The email address format is incorrect"],
+            email: ["The email address format is incorrect"],
             password: ["Password must be at least 8 characters long"],
           },
           messageExample: "Bad Request",
